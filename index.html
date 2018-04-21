@@ -8,27 +8,24 @@
         <title>Neighborhood Map</title>
     </head>
     <body>
-    <header>
-
-    </header>
     <main>
     <section class="container-fluid">
         <div class="row">
             <div id="sidebar" class="col-12 col-md-4 p-5">
                 <div class="row">
                     <div class="col-12 mb-5">
-                        <h2 class="mb-3">Neighborhood Map</h2>
+                        <h2 class="mb-5">Top Picks in Toronto</h2>
                         <form id="search-form" class="form" action="" method="post">
-                            <select class="custom-select mb-2" name="filter_categories" data-bind="value: category, foreach: allCategories">
-                                <option data-bind="text: name, value: id"></option>
-                            </select>
                             <div class="input-group mb-2">
                                 <input id="text_input" class="form-control" data-bind="textInput: filter, valueUpdate: 'afterKeyDown'" type="text" name="text" value="" placeholder="Filter locations by name">
                                 <div class="input-group-append">
                                     <button data-bind="click: clearNameFilter" class="btn btn-outline-secondary" type="button" name="button"><i class="fas fa-times"></i></button>
                                 </div>
                             </div>
-                            <div class="btn-group mb-2">
+                            <select class="custom-select mb-2" name="filter_categories" data-bind="value: category, foreach: allCategories">
+                                <option data-bind="text: name, value: id"></option>
+                            </select>
+                            <div class="btn-group special mb-2">
                                 <a data-bind="click: showMarkers" class="btn btn-primary text-white">Show Markers</a>
                                 <a data-bind="click: hideMarkers" class="btn btn-danger text-white">Hide Markers</a>
                             </div>

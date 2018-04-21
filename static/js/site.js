@@ -3,73 +3,43 @@
 // API Keys
 const GOOGLE_API_KEY = "AIzaSyA_CKZ8N8Oqjoa7jRcIcIWPVIXwMIVCK4E";
 const FOURSQUARE_API_KEY = "D2GMFWAGMWC0A2NDN5JCFSZ2S31PZEVTWDN3IR2RHEG3A0UW";
-const FOURSQUARE_API_BASE = "https://api.foursquare.com/v2/";
+const URL_BASE = "https://api.foursquare.com/v2/";
+const MAP_CENTER = {
+    lat: 43.647823,
+    lng: -79.381653
+};
+
+var searchUrl = `${URL_BASE}venues/explore?ll=${MAP_CENTER.lat},${MAP_CENTER.lng}&section=topPicks&radius=5000&limit=50&oauth_token=${FOURSQUARE_API_KEY}&v=20180421`;
 
 // Global Variables
 var map, app;
-
-// Initial Locations to show on map
-var initialLocations = [{
-        name: "Rogers Centre",
-        lat: 43.6414378,
-        lng: -79.3915419
-    },
-    {
-        name: "Air Canada Center",
-        lat: 43.6434661,
-        lng: -79.3812876
-    },
-    {
-        name: "BMO Field",
-        lat: 43.6332226,
-        lng: -79.4207509
-    },
-    {
-        name: "AGO (Art Gallery of Ontario)",
-        lat: 43.6536066,
-        lng: -79.394701
-    },
-    {
-        name: "Royal Ontario Museum",
-        lat: 43.6677097,
-        lng: -79.3969658
-    },
-    {
-        name: "Ripley's Aquarium of Canada",
-        lat: 43.642403,
-        lng: -79.3881597
-    },
-    {
-        name: "CN Tower",
-        lat: 43.6425662,
-        lng: -79.3892455
-    },
-    {
-        name: "Ricoh Colliseum",
-        lat: 43.6356272,
-        lng: -79.4172187
-    }
-];
 
 // Location Model
 var LocationModel = function(data) {
     var self = this;
     var infoWindow = new google.maps.InfoWindow();
-    this.venue_id = "";
     this.name = data.name;
-    this.lat = data.lat;
-    this.lng = data.lng
-    this.address = "";
-    this.city = "";
-    this.province = "";
-    this.phone = "";
-    this.url = "";
+    this.lat = data.location.lat;
+    this.lng = data.location.lng
     this.visible = ko.observable(true);
     this.content = ko.observable("");
+    this.venue_id = data.id;
+    this.address = data.location.address;
+    this.city = data.location.city;
+    this.province = data.location.state;
+    this.phone = data.contact.formattedPhone;
+    this.url = data.url
+    this.category = data.categories[0];
+    this.content(`
+            <p class="p-0 m-0">${this.address}</p>
+            <p class="p-0 m-0 mb-2">${this.city} ${this.province}</p>
+            <p class="p-0 m-0"><a class="text-dark" href="tel:${this.phone}">${this.phone}</a></p>
+            <p class="p-0 m-0"><a class="text-dark" href="${this.url}" target="_new">${this.url}</a></p>
+        `);
     this.marker = new google.maps.Marker({
         position: {
-            lat: data.lat,
-            lng: data.lng
+            lat: data.location.lat,
+            lng: data.location.lng
         }
     });
     this.marker.addListener('click', function() {
@@ -108,11 +78,13 @@ function AppViewModel() {
             return location.category;
         });
 
-        categories.push({id: 0, name: "All categories"});
-
         var unique = _.uniqWith(categories, _.isEqual);
 
-        return _.sortBy(unique, 'name');
+        var sorted = _.sortBy(unique, 'name');
+
+        sorted.unshift({id: 0, name: "All categories"});
+
+        return sorted;
 
     });
 
@@ -168,6 +140,7 @@ function AppViewModel() {
 
     this.clearNameFilter = function() {
         self.filter("");
+        self.category(0);
     }
 
 };
@@ -175,46 +148,29 @@ function AppViewModel() {
 function start() {
 
     map = new google.maps.Map($('#map')[0], {
-        center: {
-            lat: 43.6565353,
-            lng: -79.6010328
+        center: MAP_CENTER,
+        zoom: 13
+    });
+
+    $.ajax({
+        method: 'GET',
+        url: searchUrl,
+        success: function(result) {
+
+            app = new AppViewModel();
+
+            result.response.groups[0].items.forEach(item => {
+
+                app.allLocations.push(new LocationModel(item.venue));
+
+            });
+
+            ko.applyBindings(app);
+
         },
-        zoom: 10
+        error: function(error) {
+            alert('There was a problem connecting to the FourSquare API');
+        }
     });
-
-    app = new AppViewModel();
-
-    initialLocations.forEach(location => {
-
-        var model = new LocationModel(location);
-
-        $.ajax({
-            method: "GET",
-            url: `${FOURSQUARE_API_BASE}venues/search?name=${model.name}&ll=${model.lat},${model.lng}&oauth_token=${FOURSQUARE_API_KEY}&intent=match&v=20180419`,
-            success: function(result) {
-
-                var venue = result.response.venues[0];
-
-                model.venue_id = venue.id;
-                model.address = venue.location.address;
-                model.city = venue.location.city;
-                model.province = venue.location.state;
-                model.phone = venue.contact.formattedPhone;
-                model.url = venue.url;
-                model.content(`
-                        <p class="p-0 m-0">${model.address}</p>
-                        <p class="p-0 m-0 mb-2">${model.city} ${model.province}</p>
-                        <p class="p-0 m-0"><a class="text-dark" href="tel:${model.phone}">${model.phone}</a></p>
-                        <p class="p-0 m-0"><a class="text-dark" href="${model.url}" target="_new">${model.url}</a></p>
-                    `);
-                model.category = venue.categories[0];
-
-                app.allLocations.push(model);
-
-            }
-        });
-    });
-
-    ko.applyBindings(app);
 
 }

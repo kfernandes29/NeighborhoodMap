@@ -18,3 +18,11 @@
 .info-window {
     max-width: 400px;
 }
+
+.btn-group.special {
+  display: flex;
+}
+
+.special .btn {
+  flex: 1
+}
