@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <link rel="stylesheet" href="static/bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" href="static/fontawesome/css/fontawesome-all.css">
+        <link rel="stylesheet" href="static/css/style.css">
+        <meta charset="utf-8">
+        <title>Neighborhood Map</title>
+    </head>
+    <body>
+    <header>
+
+    </header>
+    <main>
+    <section class="container-fluid">
+        <div class="row">
+            <div id="sidebar" class="col-12 col-md-4 p-5">
+                <div class="row">
+                    <div class="col-12 mb-5">
+                        <h2 class="mb-3">Neighborhood Map</h2>
+                        <form id="search-form" class="form" action="" method="post">
+                            <select class="custom-select mb-2" name="filter_categories" data-bind="value: category, foreach: allCategories">
+                                <option data-bind="text: name, value: id"></option>
+                            </select>
+                            <div class="input-group mb-2">
+                                <input id="text_input" class="form-control" data-bind="textInput: filter, valueUpdate: 'afterKeyDown'" type="text" name="text" value="" placeholder="Filter locations by name">
+                                <div class="input-group-append">
+                                    <button data-bind="click: clearNameFilter" class="btn btn-outline-secondary" type="button" name="button"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="btn-group mb-2">
+                                <a data-bind="click: showMarkers" class="btn btn-primary text-white">Show Markers</a>
+                                <a data-bind="click: hideMarkers" class="btn btn-danger text-white">Hide Markers</a>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-12">
+                        <h6 class="mb-3">Results: <span data-bind="text: filteredLocations().length"></span></h6>
+                        <ul class="list-unstyled mb-5" data-bind="foreach: filteredLocations">
+                            <li class="p-0">
+                                <div data-bind="attr: { id: 'accordion-' + $index() }">
+                                    <div class="card border-0">
+                                        <div class="card-header px-0" data-bind="attr: { id: 'heading-' + $index() }">
+                                            <a class="btn btn-link" data-toggle="collapse" data-bind="text: name, attr: { 'data-target': '#collapse-' + $index(), 'aria-controls': 'collapse-' + $index() } " aria-expanded="true"></a>
+                                        </div>
+                                        <div data-bind="attr: { id: 'collapse-' + $index(), 'aria-labelledby': 'heading-' + $index(), 'data-parent': 'accordion-' + $index() }" class="collapse">
+                                            <div class="card-body m-0 p-3">
+                                                <div class="location-content mb-3" data-bind="html: content"></div>
+                                                <a class="card-link" data-bind="click: $parent.showInfoWindow" href="#">Show on map</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <p class="text-center">Information provided by <a href="http://www.foursquare.com">FourSquare</a> <i class="ml-2 fab fa-foursquare"></i></p>
+                    </div>
+                </div>
+            </div> <!-- #sidebar -->
+            <div id="content" class="col-12 col-md-8">
+                <div id="map" class=""></div>
+            </div> <!-- #content -->
+        </div>
+    </section>
+    </main>
+    <footer>
+        <script src="static/jquery/jquery-3.3.1.js" charset="utf-8"></script>
+        <script src="static/bootstrap/js/bootstrap.bundle.js" charset="utf-8"></script>
+        <script src="static/knockout/knockout-3.4.2.js" charset="utf-8"></script>
+        <script src="static/lodash/lodash.js" charset="utf-8"></script>
+        <script src="static/js/site.js" charset="utf-8"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_CKZ8N8Oqjoa7jRcIcIWPVIXwMIVCK4E&libraries=places,geometry&callback=start"></script>
+    </footer>
+    </body>
+</html>
