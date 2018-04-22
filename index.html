@@ -13,8 +13,8 @@
         <div class="row">
             <div id="sidebar" class="col-12 col-md-4 p-5">
                 <div class="row">
-                    <div class="col-12 mb-5">
-                        <h2 class="mb-5">Top Picks in Toronto</h2>
+                    <div class="col-12 mb-3">
+                        <h2 class="mb-5">Places in Toronto</h2>
                         <form id="search-form" class="form" action="" method="post">
                             <div class="input-group mb-2">
                                 <input id="text_input" class="form-control" data-bind="textInput: nameFilter, valueUpdate: 'afterKeyDown'" type="text" name="text" value="" placeholder="Filter locations by name">
@@ -32,6 +32,7 @@
                         </form>
                     </div>
                     <div class="col-12">
+                        <h5 class="mb-3">Locations: <span data-bind="text: filteredLocations().length">0</span></h5>
                         <ul class="list-unstyled mb-5" data-bind="foreach: filteredLocations">
                             <li data-bind="attr: { id: 'accordion-' + $index() }" class="p-0 mb-3">
                                 <div class="card border-0">
@@ -42,7 +43,7 @@
                                         <div class="m-0 p-3">
                                             <div class="location-content mb-4">
                                                 <div class="p-0" data-bind="foreach: location.formattedAddress">
-                                                    <p><strong data-bind="text: $data"></strong></p>
+                                                    <p data-bind="text: $data"></p>
                                                 </div>
                                                 <p><em data-bind="text: open_status"></em></p>
                                             </div>

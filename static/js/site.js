@@ -8,7 +8,7 @@ const MAP_CENTER = {
     lat: 43.647823,
     lng: -79.381653
 };
-const searchUrl = `${URL_BASE}venues/explore?ll=${MAP_CENTER.lat},${MAP_CENTER.lng}&section=recommended&radius=5000&limit=50&oauth_token=${FOURSQUARE_API_KEY}&v=20180421`;
+const searchUrl = `${URL_BASE}venues/explore?ll=${MAP_CENTER.lat},${MAP_CENTER.lng}&section=recommended&radius=5000&limit=20&oauth_token=${FOURSQUARE_API_KEY}&v=20180421`;
 
 // Global Variables
 var map, app;
