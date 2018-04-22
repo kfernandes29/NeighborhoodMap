@@ -17,12 +17,12 @@
                         <h2 class="mb-5">Top Picks in Toronto</h2>
                         <form id="search-form" class="form" action="" method="post">
                             <div class="input-group mb-2">
-                                <input id="text_input" class="form-control" data-bind="textInput: filter, valueUpdate: 'afterKeyDown'" type="text" name="text" value="" placeholder="Filter locations by name">
+                                <input id="text_input" class="form-control" data-bind="textInput: nameFilter, valueUpdate: 'afterKeyDown'" type="text" name="text" value="" placeholder="Filter locations by name">
                                 <div class="input-group-append">
-                                    <button data-bind="click: clearNameFilter" class="btn btn-outline-secondary" type="button" name="button"><i class="fas fa-times"></i></button>
+                                    <button data-bind="click: clearFilters" class="btn btn-outline-secondary" type="button" name="button"><i class="fas fa-times"></i></button>
                                 </div>
                             </div>
-                            <select class="custom-select mb-2" name="filter_categories" data-bind="value: category, foreach: allCategories">
+                            <select class="custom-select mb-2" name="filter_categories" data-bind="value: categoryFilter, foreach: allCategories">
                                 <option data-bind="text: name, value: id"></option>
                             </select>
                             <div class="btn-group special mb-2">
@@ -32,19 +32,21 @@
                         </form>
                     </div>
                     <div class="col-12">
-                        <h6 class="mb-3">Results: <span data-bind="text: filteredLocations().length"></span></h6>
                         <ul class="list-unstyled mb-5" data-bind="foreach: filteredLocations">
-                            <li class="p-0">
-                                <div data-bind="attr: { id: 'accordion-' + $index() }">
-                                    <div class="card border-0">
-                                        <div class="card-header px-0" data-bind="attr: { id: 'heading-' + $index() }">
-                                            <a class="btn btn-link" data-toggle="collapse" data-bind="text: name, attr: { 'data-target': '#collapse-' + $index(), 'aria-controls': 'collapse-' + $index() } " aria-expanded="true"></a>
-                                        </div>
-                                        <div data-bind="attr: { id: 'collapse-' + $index(), 'aria-labelledby': 'heading-' + $index(), 'data-parent': 'accordion-' + $index() }" class="collapse">
-                                            <div class="card-body m-0 p-3">
-                                                <div class="location-content mb-3" data-bind="html: content"></div>
-                                                <a class="card-link" data-bind="click: $parent.showInfoWindow" href="#">Show on map</a>
+                            <li data-bind="attr: { id: 'accordion-' + $index() }" class="p-0 mb-3">
+                                <div class="card border-0">
+                                    <div class="card-header" data-bind="attr: { id: 'heading-' + $index() }">
+                                        <h5><a data-toggle="collapse" data-bind="text: name, attr: { 'data-target': '#collapse-' + $index(), 'aria-controls': 'collapse-' + $index() } " aria-expanded="true"></a></h5>
+                                    </div>
+                                    <div data-bind="attr: { id: 'collapse-' + $index(), 'aria-labelledby': 'heading-' + $index(), 'data-parent': 'accordion-' + $index() }" class="collapse">
+                                        <div class="m-0 p-3">
+                                            <div class="location-content mb-4">
+                                                <div class="p-0" data-bind="foreach: location.formattedAddress">
+                                                    <p><strong data-bind="text: $data"></strong></p>
+                                                </div>
+                                                <p><em data-bind="text: open_status"></em></p>
                                             </div>
+                                            <a class="btn btn-outline-primary" data-bind="click: $parent.showInfoWindow" href="#">Show on map</a>
                                         </div>
                                     </div>
                                 </div>
